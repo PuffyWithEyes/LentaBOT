@@ -20,7 +20,7 @@ class DataCSV(StatesGroup):
     c = State()
 
 
-with open(f"data/number_parser.txt") as file:
+with open('data/number_parser.txt') as file:
     reader = int(file.read().count('0'))
     number = reader - 1
 
@@ -39,7 +39,7 @@ async def bot_message(message: types.Message):
 
 @dp.message_handler(Text(equals='📗 JSON'))
 async def bot_message_json(message: types.Message):
-    with open(f"data/categories.json") as file_0:
+    with open('data/categories.json') as file_0:
         products_dict = json.load(file_0)
     count = 0
     for k, v in products_dict.items():
