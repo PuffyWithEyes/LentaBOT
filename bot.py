@@ -8,15 +8,18 @@ from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 
+""" Задаём глобальные настройки для бота """
 bot = Bot(token=TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
 class DataInput(StatesGroup):
+    """ Класс состояния """
     r = State()
 
 
 class DataCSV(StatesGroup):
+    """ Класс состояния """
     c = State()
 
 

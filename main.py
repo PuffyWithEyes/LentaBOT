@@ -8,69 +8,67 @@ from selenium import webdriver
 import csv
 
 
-main_dict = []  # Создаём список, в который будем загружать информацию
+main_dict = []
 
 
-url = 'https://lenta.com/catalog/'  # Создаём строку со ссылкой на сайт
-useragent = fake_useragent.UserAgent().random  # Создаём объект ложных заголовков, чтобы сервер нас не забанил
-headers = {  # Сами заголовки
+url = 'https://lenta.com/catalog/'
+useragent = fake_useragent.UserAgent().random
+headers = {
     'User-Agent': useragent,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
 }
 
-r = requests.get(url=url, headers=headers)  # Отправляем запрос на сайт
+r = requests.get(url=url, headers=headers)
 
-soup = BeautifulSoup(r.text, 'lxml')  # Обрабатывает этот запрос
-cards = soup.find_all('a', class_='group-card')  # Ищем ВСЕ нужные html элементы
+soup = BeautifulSoup(r.text, 'lxml')
+cards = soup.find_all('a', class_='group-card')
 
-categories_dicts = {}  # Создаём словарь, куда будем записывать нужные данные
-for card in cards:  # В найденных html элементах, на каждой итерации цикла делаем следующее:
-    card_title = card.find('div', class_='group-card__title').text.strip()  # Название категории
-    card_url = f'https://lenta.com{card.get("href")}'  # Получаем ссылку на категорию
+categories_dicts = {}
+for card in cards:
+    card_title = card.find('div', class_='group-card__title').text.strip()
+    card_url = f'https://lenta.com{card.get("href")}'
 
-    card_id = card_url.split('/')[-2]  # Создаём id для каждой категории
+    card_id = card_url.split('/')[-2]
 
-    categories_dicts[card_id] = {  # Заполняем словарь
+    categories_dicts[card_id] = {
         'category_name': card_title,
         'category_href': card_url
     }
 
-with open('data/categories.json', 'w', encoding='utf-8') as file:  # Открываем файл, куда записываем все категории
+with open('data/categories.json', 'w', encoding='utf-8') as file:
     json.dump(categories_dicts, file, indent=4, ensure_ascii=False)
 
 
 def check_new_categories():
     """ Функция проверки новых категорий """
-    with open('data/categories.json', encoding='utf-8') as file_0:  # Открываем файл с категориями
-        card_dict = json.load(file_0)  # Читаем его
+    with open('data/categories.json', encoding='utf-8') as file_0:
+        card_dict = json.load(file_0)
 
-    fresh_categories = {}  # Создаём словарь, куда будем помещать данные
-    for card_0 in cards:  # На каждой итерации цикла найденных элементов делаем:
-        card_url_0 = f'https://lenta.com{card_0.get("href")}'  # Создаём ссылку
-        card_id_0 = card_url_0.split('/')[-2]  # Создаём id
+    for card_0 in cards:
+        card_url_0 = f'https://lenta.com{card_0.get("href")}'
+        card_id_0 = card_url_0.split('/')[-2]
 
-        if card_id_0 in card_dict:  # Если id есть в прочитанном файле
-            continue  # Продолжаем
-        else:  # Иначе
-            # Ищем название недостающей категории
+        if card_id_0 in card_dict:
+            continue
+        else:
             card_title_0 = card_0.find('div', class_='group-card__title').text.strip()
 
-            categories_dicts[card_id_0] = {  # Записываем его в наш словарь, вместе со ссылкой и id
+            categories_dicts[card_id_0] = {
                 'category_name': card_title_0,
                 'category_href': card_url_0
             }
 
-        with open('data/categories.json', 'a', encoding='utf-8') as file_0:  # Записываем новые категории в наш файл
+        with open('data/categories.json', 'w', encoding='utf-8') as file_0:
             json.dump(categories_dicts, file_0, indent=4, ensure_ascii=False)
 
 
 def get_data_with_selenium():
     """ Функция получения данных с помощью библиотеки selenium """
-    global driver  # Создаём глобальную переменную
-    numeral = 0  # Создаём счётчик
-    count = 0  # И ещё один
-    products_dicts = {}  # Создаём словарь для данных
-    product_dict = []  # И список
+    global driver
+    numeral = 0
+    count = 0
+    products_dicts = {}
+    product_dict = []
     with open('data/number_parser.txt', 'a', encoding='utf-8') as file_count:
         file_count.write('0 ')
 
@@ -445,6 +443,7 @@ def get_data_with_selenium():
 
 
 def main():
+    """ Главная функция """
     new_categories_thread = threading.Thread(target=check_new_categories)
     selenium_thread = threading.Thread(target=get_data_with_selenium)
 
