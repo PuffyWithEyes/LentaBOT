@@ -1,0 +1,7 @@
+aiogram==2.18
+requests==2.27.1
+lxml==4.7.1
+beautifulsoup4==4.10.0
+selenium==4.1.0
+fake-useragent==0.1.11
+python-dotenv==0.19.2
