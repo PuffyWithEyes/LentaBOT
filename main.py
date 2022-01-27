@@ -35,12 +35,12 @@ for card in cards:
         'category_href': card_url
     }
 
-with open(f'data/categories.json', 'w') as file:
+with open('data/categories.json', 'w', encoding='utf-8') as file:
     json.dump(categories_dicts, file, indent=4, ensure_ascii=False)
 
 
 def check_new_categories():
-    with open(f'data/categories.json') as file_0:
+    with open('data/categories.json', encoding='utf-8') as file_0:
         card_dict = json.load(file_0)
 
     url_0 = 'https://lenta.com/catalog/'
@@ -74,21 +74,22 @@ def check_new_categories():
                 'category_href': card_url_0
             }
 
-        with open(f'data/categories.json', 'w') as file_0:
+        with open('data/categories.json', 'w', encoding='utf-8') as file_0:
             json.dump(categories_dicts, file_0, indent=4, ensure_ascii=False)
 
         return fresh_categories
 
 
 def get_data_with_selenium():
+    global driver
     numeral = 0
     count = 0
     products_dicts = {}
     product_dict = []
-    with open(f"data/number_parser.txt", 'a') as file_count:
+    with open('data/number_parser.txt', 'a', encoding='utf-8') as file_count:
         file_count.write('0 ')
 
-    with open(f"data/number_parser.txt") as file_count:
+    with open('data/number_parser.txt', encoding='utf-8') as file_count:
         counter = int(file_count.read().count('0'))
 
     for card_0 in cards:
@@ -99,13 +100,13 @@ def get_data_with_selenium():
                                useragent)
         try:
             driver = webdriver.Firefox(
-                executable_path='/home/alina/PycharmProjects/Parsers/lenta/geckodriver',
+                executable_path='D:\\Python Projects\\LentaBOT\\geckodriver.exe',
                 options=options
             )
             driver.get(url=cards_url)
             time.sleep(5)
 
-            with open(f'data/{numeral}. {card_id_0}.html', 'w') as file_0:
+            with open(f'data/{numeral}. {card_id_0}.html', 'w', encoding='utf-8') as file_0:
                 file_0.write(driver.page_source)
 
         except Exception as ex:
@@ -115,7 +116,7 @@ def get_data_with_selenium():
             driver.close()
             driver.quit()
 
-        with open(f'data/{numeral}. {card_id_0}.html') as file_0:
+        with open(f'data/{numeral}. {card_id_0}.html', encoding='utf-8') as file_0:
             src = file_0.read()
 
         s_soup = BeautifulSoup(src, 'lxml')
@@ -199,14 +200,15 @@ def get_data_with_selenium():
                     time.sleep(1.5)
 
                     try:
-                        with open(f"data/{counter}_all_products.json") as file_reader:
+                        with open(f"data/{counter}_all_products.json", encoding='utf-8') as file_reader:
                             json.load(file_reader)
 
-                        with open(f"data/{counter}_all_products.json", 'a') as file_append_json:
+                        with open(f"data/{counter}_all_products.json", 'a', encoding='utf-8') as file_append_json:
                             json.dump(products_dicts, file_append_json, indent=4, ensure_ascii=False)
 
                         for product in main_dict:
-                            with open(f"data/{counter}_all_products.csv", 'a', newline='') as file_append_csv:
+                            with open(f"data/{counter}_all_products.csv", 'a', newline='', encoding='utf-8') \
+                                    as file_append_csv:
                                 writer = csv.writer(file_append_csv)
 
                                 writer.writerow(
@@ -220,10 +222,11 @@ def get_data_with_selenium():
                                 )
 
                     except:
-                        with open(f"data/{counter}_all_products.json", 'w') as file_writer_json:
+                        with open(f"data/{counter}_all_products.json", 'w', encoding='utf-8') as file_writer_json:
                             json.dump(products_dicts, file_writer_json, indent=4, ensure_ascii=False)
 
-                        with open(f"data/{counter}_all_products.csv", 'w', newline='') as file_writer_csv:
+                        with open(f"data/{counter}_all_products.csv", 'w', newline='', encoding='utf-8')\
+                                as file_writer_csv:
                             writer = csv.writer(file_writer_csv)
 
                             writer.writerow(
@@ -237,7 +240,8 @@ def get_data_with_selenium():
                             )
 
                         for product in main_dict:
-                            with open(f"data/{counter}_all_products.csv", 'a', newline='') as file_append_csv:
+                            with open(f"data/{counter}_all_products.csv", 'a', newline='', encoding='utf-8')\
+                                    as file_append_csv:
                                 writer = csv.writer(file_append_csv)
 
                                 writer.writerow(
@@ -250,7 +254,7 @@ def get_data_with_selenium():
                                     )
                                 )
 
-                    with open(f"data/{numeral}.csv", 'w', newline='') as file_0:
+                    with open(f"data/{numeral}.csv", 'w', newline='', encoding='utf-8') as file_0:
                         writer = csv.writer(file_0)
 
                         writer.writerow(
@@ -264,7 +268,7 @@ def get_data_with_selenium():
                         )
 
                     for product in product_dict:
-                        with open(f"data/{numeral}.csv", 'a', newline='') as file_0:
+                        with open(f"data/{numeral}.csv", 'a', newline='', encoding='utf-8') as file_0:
                             writer = csv.writer(file_0)
 
                             writer.writerow(
@@ -279,7 +283,7 @@ def get_data_with_selenium():
 
                     count += 1
 
-            with open(f"data/{numeral}.json", 'w') as file_0:
+            with open(f"data/{numeral}.json", 'w', encoding='utf-8') as file_0:
                 json.dump(product_dict, file_0, indent=4, ensure_ascii=False)
 
             product_dict.clear()
@@ -364,14 +368,15 @@ def get_data_with_selenium():
                     time.sleep(1.5)
 
                     try:
-                        with open(f"data/{counter}_all_products.json") as file_reader:
+                        with open(f"data/{counter}_all_products.json", encoding='utf-8') as file_reader:
                             json.load(file_reader)
 
-                        with open(f"data/{counter}_all_products.json", 'a') as file_append_json:
+                        with open(f"data/{counter}_all_products.json", 'a', encoding='utf-8') as file_append_json:
                             json.dump(products_dicts, file_append_json, indent=4, ensure_ascii=False)
 
                         for product in main_dict:
-                            with open(f"data/{counter}_all_products.csv", 'a', newline='') as file_append_csv:
+                            with open(f"data/{counter}_all_products.csv", 'a', newline='', encoding='utf-8')\
+                                    as file_append_csv:
                                 writer = csv.writer(file_append_csv)
 
                                 writer.writerow(
@@ -385,10 +390,11 @@ def get_data_with_selenium():
                                 )
 
                     except:
-                        with open(f"data/{counter}_all_products.json", 'w') as file_writer_json:
+                        with open(f"data/{counter}_all_products.json", 'w', encoding='utf-8') as file_writer_json:
                             json.dump(products_dicts, file_writer_json, indent=4, ensure_ascii=False)
 
-                        with open(f"data/{counter}_all_products.csv", 'w', newline='') as file_writer_csv:
+                        with open(f"data/{counter}_all_products.csv", 'w', newline='', encoding='utf-8')\
+                                as file_writer_csv:
                             writer = csv.writer(file_writer_csv)
 
                             writer.writerow(
@@ -402,7 +408,8 @@ def get_data_with_selenium():
                             )
 
                         for product in main_dict:
-                            with open(f"data/{counter}_all_products.csv", 'a', newline='') as file_append_csv:
+                            with open(f"data/{counter}_all_products.csv", 'a', newline='', encoding='utf-8')\
+                                    as file_append_csv:
                                 writer = csv.writer(file_append_csv)
 
                                 writer.writerow(
@@ -415,7 +422,7 @@ def get_data_with_selenium():
                                     )
                                 )
 
-                    with open(f"data/{numeral}.csv", 'w', newline='') as file_0:
+                    with open(f"data/{numeral}.csv", 'w', newline='', encoding='utf-8') as file_0:
                         writer = csv.writer(file_0)
 
                         writer.writerow(
@@ -429,7 +436,7 @@ def get_data_with_selenium():
                         )
 
                     for product in product_dict:
-                        with open(f"data/{numeral}.csv", 'a', newline='') as file_0:
+                        with open(f"data/{numeral}.csv", 'a', newline='', encoding='utf-8') as file_0:
                             writer = csv.writer(file_0)
 
                             writer.writerow(
@@ -444,7 +451,7 @@ def get_data_with_selenium():
 
                     count += 1
 
-            with open(f"data/{numeral}.json", 'w') as file_0:
+            with open(f"data/{numeral}.json", 'w', encoding='utf-8') as file_0:
                 json.dump(product_dict, file_0, indent=4, ensure_ascii=False)
 
             product_dict.clear()

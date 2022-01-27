@@ -20,7 +20,7 @@ class DataCSV(StatesGroup):
     c = State()
 
 
-with open('data/number_parser.txt') as file:
+with open('data/number_parser.txt', encoding='utf-8') as file:
     reader = int(file.read().count('0'))
     number = reader - 1
 
@@ -39,7 +39,7 @@ async def bot_message(message: types.Message):
 
 @dp.message_handler(Text(equals='📗 JSON'))
 async def bot_message_json(message: types.Message):
-    with open('data/categories.json') as file_0:
+    with open('data/categories.json', encoding='utf-8') as file_0:
         products_dict = json.load(file_0)
     count = 0
     for k, v in products_dict.items():
@@ -55,7 +55,7 @@ async def bot_message_json(message: types.Message):
 async def answer_json(message: types.Message, state: FSMContext):
     r = message.text
     try:
-        with open(f"data/{str(r)}.json", 'rb') as file_0:
+        with open(f"data/{str(r)}.json", 'rb', encoding='utf-8') as file_0:
             await message.reply_document(file_0)
             await state.finish()
     except Exception as ex:
@@ -64,7 +64,7 @@ async def answer_json(message: types.Message, state: FSMContext):
 
 @dp.message_handler(Text(equals='📚 CSV'))
 async def bot_message_csv(message: types.Message):
-    with open(f"data/categories.json") as file_0:
+    with open('data/categories.json', encoding='utf-8') as file_0:
         products_dict = json.load(file_0)
     count = 0
     for k, v in products_dict.items():
@@ -80,7 +80,7 @@ async def bot_message_csv(message: types.Message):
 async def answer_json(message: types.Message, state: FSMContext):
     c = message.text
     try:
-        with open(f"data/{str(c)}.csv", 'rb') as file_0:
+        with open(f"data/{str(c)}.csv", 'rb', encoding='utf-8') as file_0:
             await message.reply_document(file_0)
             await state.finish()
     except Exception as ex:
@@ -95,9 +95,9 @@ async def bot_message_repeat(message: types.Message):
 @dp.message_handler(Text(equals='💾 Получить все категории'))
 async def bot_message_all(message: types.Message):
     try:
-        with open(f"data/{number}_all_products.json", 'rb') as file_send:
+        with open(f"data/{number}_all_products.json", 'rb', encoding='utf-8') as file_send:
             await message.reply_document(file_send)
-        with open(f"data/{number}_all_products.csv", 'rb') as file_send:
+        with open(f"data/{number}_all_products.csv", 'rb', encoding='utf-8') as file_send:
             await message.reply_document(file_send)
     except Exception as ex:
         print(ex)
