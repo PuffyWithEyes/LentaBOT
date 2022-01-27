@@ -54,12 +54,16 @@ async def bot_message_json(message: types.Message):
 @dp.message_handler(state=DataInput.r)
 async def answer_json(message: types.Message, state: FSMContext):
     r = message.text
-    try:
-        with open(f"data/{str(r)}.json", 'rb', encoding='utf-8') as file_0:
-            await message.reply_document(file_0)
-            await state.finish()
-    except Exception as ex:
-        print(ex)
+    if r == '💾 Получить все категории':
+        await state.finish()
+        await bot_message_all
+    else:
+        try:
+            with open(f"data/{str(r)}.csv", 'rb') as file_0:
+                await message.reply_document(file_0)
+                await state.finish()
+        except Exception as ex:
+            print(2, ex)
 
 
 @dp.message_handler(Text(equals='📚 CSV'))
@@ -79,12 +83,16 @@ async def bot_message_csv(message: types.Message):
 @dp.message_handler(state=DataCSV.c)
 async def answer_json(message: types.Message, state: FSMContext):
     c = message.text
-    try:
-        with open(f"data/{str(c)}.csv", 'rb', encoding='utf-8') as file_0:
-            await message.reply_document(file_0)
-            await state.finish()
-    except Exception as ex:
-        print(ex)
+    if c == '💾 Получить все категории':
+        await state.finish()
+        await bot_message_all
+    else:
+        try:
+            with open(f"data/{str(c)}.csv", 'rb') as file_0:
+                await message.reply_document(file_0)
+                await state.finish()
+        except Exception as ex:
+            print(3, ex)
 
 
 @dp.message_handler(Text(equals='🔁 Выбрать формат'))
@@ -95,12 +103,12 @@ async def bot_message_repeat(message: types.Message):
 @dp.message_handler(Text(equals='💾 Получить все категории'))
 async def bot_message_all(message: types.Message):
     try:
-        with open(f"data/{number}_all_products.json", 'rb', encoding='utf-8') as file_send:
+        with open(f"data/{number}_all_products.json", 'rb') as file_send:
             await message.reply_document(file_send)
-        with open(f"data/{number}_all_products.csv", 'rb', encoding='utf-8') as file_send:
+        with open(f"data/{number}_all_products.csv", 'rb') as file_send:
             await message.reply_document(file_send)
     except Exception as ex:
-        print(ex)
+        print(4, ex)
 
 
 if __name__ == '__main__':
