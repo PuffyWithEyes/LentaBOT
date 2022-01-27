@@ -30,6 +30,7 @@ with open('data/number_parser.txt', encoding='utf-8') as file:
 
 @dp.message_handler(commands='start')
 async def start(message: types.Message):
+    """ Функция приветствия """
     await message.answer('Чтобы выбрать формат .json или .csv, а затем выбрать нужную вам категорию, нажмите'
                          ' на кнопку "ℹ Форматы" и выберите нужный вам формат.',
                          reply_markup=nav.main_menu)
@@ -37,12 +38,14 @@ async def start(message: types.Message):
 
 @dp.message_handler(Text(equals='ℹ Форматы'))
 async def bot_message(message: types.Message):
+    """ Функция просмотра форматов """
     await message.reply('Выберите нужный вам формат файла .json или .csv. Или выберите все товары сразу',
                         reply_markup=nav.choice_menu)
 
 
 @dp.message_handler(Text(equals='📗 JSON'))
 async def bot_message_json(message: types.Message):
+    """ Функция, которая присылает категории и выбранный формат """
     with open('data/categories.json', encoding='utf-8') as file_0:
         products_dict = json.load(file_0)
     count = 0
@@ -57,6 +60,7 @@ async def bot_message_json(message: types.Message):
 
 @dp.message_handler(state=DataInput.r)
 async def answer_json(message: types.Message, state: FSMContext):
+    """ Функция присылающая нужный файл """
     r = message.text
     if r == '❌ Отменить выбор формата':
         await state.finish()
@@ -72,6 +76,7 @@ async def answer_json(message: types.Message, state: FSMContext):
 
 @dp.message_handler(Text(equals='📚 CSV'))
 async def bot_message_csv(message: types.Message):
+    """ Функция, которая присылает категории и выбранный формат """
     with open('data/categories.json', encoding='utf-8') as file_0:
         products_dict = json.load(file_0)
     count = 0
@@ -101,11 +106,13 @@ async def answer_json(message: types.Message, state: FSMContext):
 
 @dp.message_handler(Text(equals='🔁 Выбрать формат'))
 async def bot_message_repeat(message: types.Message):
+    """ Функция выбора формата """
     await message.reply('Выберите формат файла!', reply_markup=nav.choice_menu)
 
 
 @dp.message_handler(Text(equals='💾 Получить все категории'))
 async def bot_message_all(message: types.Message):
+    """ Функция, которая присылает категории и выбранный формат """
     try:
         with open(f"data/{number}_all_products.json", 'rb') as file_send:
             await message.reply_document(file_send)
