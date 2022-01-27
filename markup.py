@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
+""" Создаём кнопки и меню с кнопками """
 btn_info = KeyboardButton('ℹ Форматы')
 btn_json = KeyboardButton('📗 JSON')
 btn_csv = KeyboardButton('📚 CSV')
