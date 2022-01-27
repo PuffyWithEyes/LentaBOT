@@ -1,4 +1,4 @@
-import threading
+import threading  # Импортируем нужные нам библиотеки
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -8,84 +8,69 @@ from selenium import webdriver
 import csv
 
 
-main_dict = []
+main_dict = []  # Создаём список, в который будем загружать информацию
 
 
-url = 'https://lenta.com/catalog/'
-useragent = fake_useragent.UserAgent().random
-headers = {
+url = 'https://lenta.com/catalog/'  # Создаём строку со ссылкой на сайт
+useragent = fake_useragent.UserAgent().random  # Создаём объект ложных заголовков, чтобы сервер нас не забанил
+headers = {  # Сами заголовки
     'User-Agent': useragent,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
 }
 
-r = requests.get(url=url, headers=headers)
+r = requests.get(url=url, headers=headers)  # Отправляем запрос на сайт
 
-soup = BeautifulSoup(r.text, 'lxml')
-cards = soup.find_all('a', class_='group-card')
+soup = BeautifulSoup(r.text, 'lxml')  # Обрабатывает этот запрос
+cards = soup.find_all('a', class_='group-card')  # Ищем ВСЕ нужные html элементы
 
-categories_dicts = {}
-for card in cards:
-    card_title = card.find('div', class_='group-card__title').text.strip()
-    card_url = f'https://lenta.com{card.get("href")}'
+categories_dicts = {}  # Создаём словарь, куда будем записывать нужные данные
+for card in cards:  # В найденных html элементах, на каждой итерации цикла делаем следующее:
+    card_title = card.find('div', class_='group-card__title').text.strip()  # Название категории
+    card_url = f'https://lenta.com{card.get("href")}'  # Получаем ссылку на категорию
 
-    card_id = card_url.split('/')[-2]
+    card_id = card_url.split('/')[-2]  # Создаём id для каждой категории
 
-    categories_dicts[card_id] = {
+    categories_dicts[card_id] = {  # Заполняем словарь
         'category_name': card_title,
         'category_href': card_url
     }
 
-with open('data/categories.json', 'w', encoding='utf-8') as file:
+with open('data/categories.json', 'w', encoding='utf-8') as file:  # Открываем файл, куда записываем все категории
     json.dump(categories_dicts, file, indent=4, ensure_ascii=False)
 
 
 def check_new_categories():
-    with open('data/categories.json', encoding='utf-8') as file_0:
-        card_dict = json.load(file_0)
+    """ Функция проверки новых категорий """
+    with open('data/categories.json', encoding='utf-8') as file_0:  # Открываем файл с категориями
+        card_dict = json.load(file_0)  # Читаем его
 
-    url_0 = 'https://lenta.com/catalog/'
-    headers_0 = {
-        'User-Agent': useragent,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-    }
+    fresh_categories = {}  # Создаём словарь, куда будем помещать данные
+    for card_0 in cards:  # На каждой итерации цикла найденных элементов делаем:
+        card_url_0 = f'https://lenta.com{card_0.get("href")}'  # Создаём ссылку
+        card_id_0 = card_url_0.split('/')[-2]  # Создаём id
 
-    r_0 = requests.get(url=url_0, headers=headers_0)
-
-    soup_0 = BeautifulSoup(r_0.text, 'lxml')
-    cards_0 = soup_0.find_all('a', class_='group-card')
-
-    fresh_categories = {}
-    for card_0 in cards_0:
-        card_url_0 = f'https://lenta.com{card_0.get("href")}'
-        card_id_0 = card_url_0.split('/')[-2]
-
-        if card_id_0 in card_dict:
-            continue
-        else:
+        if card_id_0 in card_dict:  # Если id есть в прочитанном файле
+            continue  # Продолжаем
+        else:  # Иначе
+            # Ищем название недостающей категории
             card_title_0 = card_0.find('div', class_='group-card__title').text.strip()
 
-            categories_dicts[card_id_0] = {
+            categories_dicts[card_id_0] = {  # Записываем его в наш словарь, вместе со ссылкой и id
                 'category_name': card_title_0,
                 'category_href': card_url_0
             }
 
-            fresh_categories[card_id_0] = {
-                'category_name': card_title_0,
-                'category_href': card_url_0
-            }
-
-        with open('data/categories.json', 'w', encoding='utf-8') as file_0:
+        with open('data/categories.json', 'a', encoding='utf-8') as file_0:  # Записываем новые категории в наш файл
             json.dump(categories_dicts, file_0, indent=4, ensure_ascii=False)
-
-        return fresh_categories
 
 
 def get_data_with_selenium():
-    global driver
-    numeral = 0
-    count = 0
-    products_dicts = {}
-    product_dict = []
+    """ Функция получения данных с помощью библиотеки selenium """
+    global driver  # Создаём глобальную переменную
+    numeral = 0  # Создаём счётчик
+    count = 0  # И ещё один
+    products_dicts = {}  # Создаём словарь для данных
+    product_dict = []  # И список
     with open('data/number_parser.txt', 'a', encoding='utf-8') as file_count:
         file_count.write('0 ')
 

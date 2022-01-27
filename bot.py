@@ -34,7 +34,8 @@ async def start(message: types.Message):
 
 @dp.message_handler(Text(equals='ℹ Форматы'))
 async def bot_message(message: types.Message):
-    await message.reply('Выберите нужный вам формат файла .json или .csv.', reply_markup=nav.choice_menu)
+    await message.reply('Выберите нужный вам формат файла .json или .csv. Или выберите все товары сразу',
+                        reply_markup=nav.choice_menu)
 
 
 @dp.message_handler(Text(equals='📗 JSON'))
@@ -54,16 +55,16 @@ async def bot_message_json(message: types.Message):
 @dp.message_handler(state=DataInput.r)
 async def answer_json(message: types.Message, state: FSMContext):
     r = message.text
-    if r == '💾 Получить все категории':
+    if r == '❌ Отменить выбор формата':
         await state.finish()
-        await bot_message_all
+        await message.reply('Вы отменили выбранный вами формат', reply_markup=nav.cancel_menu)
     else:
         try:
             with open(f"data/{str(r)}.csv", 'rb') as file_0:
-                await message.reply_document(file_0)
+                await message.reply_document(file_0, reply_markup=nav.cancel_menu)
                 await state.finish()
         except Exception as ex:
-            print(2, ex)
+            print(ex)
 
 
 @dp.message_handler(Text(equals='📚 CSV'))
@@ -83,16 +84,16 @@ async def bot_message_csv(message: types.Message):
 @dp.message_handler(state=DataCSV.c)
 async def answer_json(message: types.Message, state: FSMContext):
     c = message.text
-    if c == '💾 Получить все категории':
+    if c == '❌ Отменить выбор формата':
         await state.finish()
-        await bot_message_all
+        await message.reply('Вы отменили выбранный вами формат', reply_markup=nav.cancel_menu)
     else:
         try:
             with open(f"data/{str(c)}.csv", 'rb') as file_0:
-                await message.reply_document(file_0)
+                await message.reply_document(file_0, reply_markup=nav.cancel_menu)
                 await state.finish()
         except Exception as ex:
-            print(3, ex)
+            print(ex)
 
 
 @dp.message_handler(Text(equals='🔁 Выбрать формат'))
@@ -108,7 +109,7 @@ async def bot_message_all(message: types.Message):
         with open(f"data/{number}_all_products.csv", 'rb') as file_send:
             await message.reply_document(file_send)
     except Exception as ex:
-        print(4, ex)
+        print(ex)
 
 
 if __name__ == '__main__':
